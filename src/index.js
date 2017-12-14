@@ -39,9 +39,10 @@ class Board extends React.Component {
     this.state = {
       squares: Array(9).fill(null),
       xIsNext: true,
+      lastScoreX: 0, //Initialisation score
+      lastScoreO: 0
     };
   }
-
   handleClick(i) {   //Au clic
     const squares = this.state.squares.slice();
     if (calculateWinner(squares) || squares[i]) { //Evite de pouvoir rejouer la case
@@ -54,10 +55,12 @@ class Board extends React.Component {
     });
   }
 
-  handleClickReplay(){  //Réinitialisation au click bouton rejouer
+  handleClickReplay(scoreX, scoreO){  //Réinitialisation au click bouton rejouer. Paramètre pour la sauvegarde du score
     this.setState({
       squares : Array(9).fill(null),
-      xIsNext: true
+      xIsNext: true,
+      lastScoreX : scoreX,                 
+      lastScoreO: scoreO
     }); 
   }
 
@@ -72,52 +75,65 @@ class Board extends React.Component {
 
   render() {    //Rendu du tableau de jeu
     const winner = calculateWinner(this.state.squares);
+    let scoreX = this.state.lastScoreX;
+    let scoreO = this.state.lastScoreO;
     let status;
-    let replay;
     if (winner) {
       status = winner + ' a gagné!';
+      if (winner === 'X') {
+        scoreX ++;
+      }else{
+        scoreO ++;
+      }
     } else {
       status = 'Prochain joueur: ' + (this.state.xIsNext ? 'X' : 'O');
     }
 
     return (
-      <div>
-        <div className="status text-center">{status}</div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
+      <section className="game">
+        <div className=" game-board">
+          <div className="col-12">
+            <div className="status text-center">{status}</div>
+            <div className="board-row">
+              {this.renderSquare(0)}
+              {this.renderSquare(1)}
+              {this.renderSquare(2)}
+            </div>
+            <div className="board-row">
+              {this.renderSquare(3)}
+              {this.renderSquare(4)}
+              {this.renderSquare(5)}
+            </div>
+            <div className="board-row">
+              {this.renderSquare(6)}
+              {this.renderSquare(7)}
+              {this.renderSquare(8)}
+            </div>
+            <div className='text-center'>
+              <button type="button" className="btn btn-primary" onClick={()=>this.handleClickReplay(scoreX, scoreO)}>Rejouer</button>
+            </div>
+          </div>
+          <div className="score row">
+              <div className="col-12">
+                <h2 className='text-center'>Score</h2>
+                <div className='row'>
+                  <div className='col-6'>
+                    <h4 className='text-center'>Joueur X</h4>
+                    {scoreX}
+                  </div>
+                  <div className='col-6'>
+                    <h4 className='text-center'>Joueur O</h4>
+                    {scoreO}
+                  </div>
+                </div>
+              </div>
+          </div>
         </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
-        <div className='text-center'>
-          <button type="button" class="btn btn-primary" onClick={()=>this.handleClickReplay()}>Rejouer</button>;
-        </div>
-      </div>
+      </section>
     );
   }
 }
 
-class Game extends React.Component {  //Rendu contenant le jeu et passer au html
-  render() {
-    return (
-      <div className="game">
-        <div className="game-board">
-          <Board />
-        </div>
-      </div>
-    );
-  }
-}
-
-ReactDOM.render(<Game />, document.getElementById('root'));  //Passage au html
+ReactDOM.render(<Board />, document.getElementById('root'));  //Passage au html
 
 

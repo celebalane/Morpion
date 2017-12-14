@@ -40,11 +40,10 @@ ol, ul {
   background: #ddd;
 }
 
-.game {
-  display: flex;
-  flex-direction: row;
-}
-
 .btn{
   margin-top: 5%;
+}
+
+.score{
+  margin-top: 10%;
 }
